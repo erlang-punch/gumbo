@@ -1,1 +1,4 @@
-/* file gumbo.h */
+/*
+ *
+ */
+void _gumbo_parse(const char *, const char *);

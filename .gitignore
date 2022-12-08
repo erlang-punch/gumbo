@@ -16,3 +16,6 @@ _build
 .idea
 rebar3.crashdump
 **~
+**.so
+**.core
+**.out

@@ -19,3 +19,4 @@ rebar3.crashdump
 **.so
 **.core
 **.out
+c_src/gumbo_test

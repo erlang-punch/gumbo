@@ -1,32 +1,53 @@
-/*
+/* 
+ * Gumbo Erlang Library
  *
+ * This library has been created to support HTML validation and
+ * parsing using an external interface to Erlang. In this case, Gumbo
+ * project is used to do the job
+ * 
+ * Usage and Exported Functions
+ * 
+ * gumbo:valid_html/1
+ * gumbo:valid
+ *
+ * 
+ * {<<"div">>, [{<<"class">>, <<"main">>}, ...], [{div, [], ...}]}
+ * 
  * see https://matze.github.io/clib-doc/gumbo-parser/index.html#parser_8c_1acc6867266c808111d0c38b790f5a01fa
  *     https://github.com/google/gumbo-parser/blob/aa91b27b02c0c80c482e24348a457ed7c3c088e0/tests/parser.cc
  *     https://github.com/google/gumbo-parser/blob/aa91b27b02c0c80c482e24348a457ed7c3c088e0/tests/test_utils.cc
  */
 #include <gumbo.h>
 #include <ei.h>
+#include "gumbo_erlang.h"
 
 // to remove
 #include <assert.h>
 #include <unistd.h>
 #include <stdlib.h>
 
+// gumbo:valid_html().
+// gumbo:to_term().
+// int valid_html(const char *)
+//   -spec valid_html(bitstring()) -> boolean()
+// int html_to_term(const char *, char *result, size_t len)
+//  {ok, term()}
+//  {error, reason()}
+// 
 
 /*
- * 
+ *
  */
 int
-_valid(const char *input) {
-  GumboOutput *gumbo_output = gumbo_parse(input);
+gumbo_html_validation(const char *input, size_t input_length) {
+  // GumboOutput *gumbo_output = gumbo_parse(input);
+  GumboOptions options = kGumboDefaultOptions;
+  GumboOutput *gumbo_output = gumbo_parse_with_options(&options, input, input_length);
   int ret = gumbo_output->errors.length;
   gumbo_destroy_output(&kGumboDefaultOptions, gumbo_output);
   return ret;
 }
 
-/*
- *
- */
 GumboNode *
 _gumbo_get_child(GumboNode *parent, int index) {
   if (parent->type == GUMBO_NODE_DOCUMENT)
@@ -84,5 +105,3 @@ _gumbo_parse(const char *_input, const char *_output) {
 
   free(gumbo_output);
 }
-
-

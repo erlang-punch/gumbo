@@ -1,17 +1,17 @@
 #include "minunit.h"
-#include "gumbo.h"
+#include "gumbo_erlang.h"
+#include <string.h>
 
 /*
  * Check if an html document is valid.
  */
 MU_TEST(test_valid) {
-  mu_check(0 == _valid("<!doctype html><html></html>"));
-  mu_check(1 == _valid("<html></html>"));
-}
+  char *valid = "<!doctype html><html></html>";
+  mu_check(0 == gumbo_html_validation(valid, strlen(valid)));
 
-/*
- *
- */
+  char *invalid = "<html></html>";
+  mu_check(1 == gumbo_html_validation(invalid, strlen(invalid)));
+}
 
 MU_TEST_SUITE(test_suite) {
   MU_RUN_TEST(test_valid);

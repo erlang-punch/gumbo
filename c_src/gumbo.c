@@ -12,6 +12,21 @@
 #include <unistd.h>
 #include <stdlib.h>
 
+
+/*
+ * 
+ */
+int
+_valid(const char *input) {
+  GumboOutput *gumbo_output = gumbo_parse(input);
+  int ret = gumbo_output->errors.length;
+  gumbo_destroy_output(&kGumboDefaultOptions, gumbo_output);
+  return ret;
+}
+
+/*
+ *
+ */
 GumboNode *
 _gumbo_get_child(GumboNode *parent, int index) {
   if (parent->type == GUMBO_NODE_DOCUMENT)
@@ -35,9 +50,14 @@ _print_count(GumboNode *node, const char *name) {
 
 void
 _gumbo_parse(const char *_input, const char *_output) {
-  const char *input = "<html><body>this is my content</body></html>";
+  const char *input = "<><!doctype html><html><body>this is my content</body></html>";
   GumboOutput *gumbo_output = gumbo_parse(input);
 
+  if (gumbo_output->errors.length>0) {
+    int len = gumbo_output->errors.length;
+    printf("error: %d, %d\n", len, gumbo_output->errors.capacity);
+  }
+  
   /* A root element, {root, [{html, []}]}
    * 
    */

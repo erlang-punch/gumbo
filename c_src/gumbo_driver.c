@@ -25,8 +25,13 @@ gumbo_driver_stop(ErlDrvData handle) {
 static void
 gumbo_driver_output(ErlDrvData handle, char *buff, ErlDrvSizeT bufflen) {
   data* d = (data*)handle;
-  char ret = (char)gumbo_html_validation(buff, bufflen);
-  driver_output(d->port, &ret, 1);
+  char message_size = sizeof(int);
+  char message[message_size];
+  (void)bzero(message, message_size);
+
+  int valid = gumbo_html_validation(buff, bufflen);
+  (void)strncpy(message, (char *)&valid, message_size);
+  driver_output(d->port, message, message_size);
 }
 
 ErlDrvEntry gumbo_driver = {

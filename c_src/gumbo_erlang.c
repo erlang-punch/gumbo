@@ -35,12 +35,17 @@
 //  {error, reason()}
 // 
 
-/*
+/** 
+ * gumbo_html_validation function is the simpliest function present
+ * in this library. It takes a raw input as buffer, parse it
+ * with gumbo_parse_with_options and returns the error code as
+ * integer.
  *
+ * @param input the string to parse
+ * @param size_t the size of the string
  */
 int
 gumbo_html_validation(const char *input, size_t input_length) {
-  // GumboOutput *gumbo_output = gumbo_parse(input);
   GumboOptions options = kGumboDefaultOptions;
   GumboOutput *gumbo_output = gumbo_parse_with_options(&options, input, input_length);
   int ret = gumbo_output->errors.length;
@@ -78,7 +83,7 @@ _gumbo_parse(const char *_input, const char *_output) {
     int len = gumbo_output->errors.length;
     printf("error: %d, %d\n", len, gumbo_output->errors.capacity);
   }
-  
+
   /* A root element, {root, [{html, []}]}
    * 
    */

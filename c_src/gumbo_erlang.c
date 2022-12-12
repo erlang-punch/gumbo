@@ -108,5 +108,20 @@ _gumbo_parse(const char *_input, const char *_output) {
   printf("%d\n", text->type);
   printf("%s\n", text->v.text.text);
 
-  free(gumbo_output);
+  gumbo_destroy_output(&kGumboDefaultOptions, gumbo_output);
+}
+
+void
+_gumbo_parser2(){
+  const char *input = "<><!doctype html><html><body>this is my content</body></html>";
+  GumboOutput *gumbo_output = gumbo_parse(input);
+
+  if (gumbo_output->errors.length>0) {
+    int len = gumbo_output->errors.length;
+    printf("error: %d, %d\n", len, gumbo_output->errors.capacity);
+  }
+
+  GumboNode *p = NULL;
+  GumboNode *root = gumbo_output->document;
+  
 }

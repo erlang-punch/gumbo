@@ -3,6 +3,9 @@
 # TODO: adapt the makefile to support different system
 # TODO: 
 ######################################################################
+CC_OPTS = -O2
+CC = cc $(CC_OPS)
+
 CC_DRIV = -fpic -shared
 CC_LIBS = -L /usr/lib
 CC_LIBS += -lgumbo
@@ -58,7 +61,7 @@ clean:
 	rm gumbo_test
 
 gumbo_driver.so:
-	cc gumbo_erlang.c gumbo_driver.c $(CC_LIBS) $(CC_INCS) $(CC_DRIV) -o $@
+	$(CC) gumbo_erlang.c gumbo_driver.c $(CC_LIBS) $(CC_INCS) $(CC_DRIV) -o $@
 
 gumbo_test:
-	cc gumbo_erlang.c gumbo_test.c $(CC_LIBS) $(CC_INCS) -o $@
+	$(CC) gumbo_erlang.c gumbo_test.c $(CC_LIBS) $(CC_INCS) -o $@

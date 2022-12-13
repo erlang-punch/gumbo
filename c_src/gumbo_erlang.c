@@ -76,7 +76,7 @@ _print_count(GumboNode *node, const char *name) {
 
 void
 _gumbo_parse(const char *_input, const char *_output) {
-  const char *input = "<><!doctype html><html><body>this is my content</body></html>";
+  const char *input = "<!doctype html><html><body>this is my content</body></html>";  
   GumboOutput *gumbo_output = gumbo_parse(input);
 
   if (gumbo_output->errors.length>0) {
@@ -89,17 +89,20 @@ _gumbo_parse(const char *_input, const char *_output) {
    */
   GumboNode *root = gumbo_output->document;
   _print_count(root, "root");
+  _gumbo_node_type(root);
 
   /* An html element, {html, [{body, []}]}}
    *
    */
   GumboNode *html = _gumbo_get_child(root, 0);
+  _gumbo_node_type(html);
   _print_count(html, "html");
 
   /* A body element {body, [{text, <<"this is my content">>}]}
    *
    */
   GumboNode *body = _gumbo_get_child(html, 1);
+  _gumbo_node_type(body);
   _print_count(body, "body");
 
   GumboNode *text = _gumbo_get_child(body, 0);  
@@ -123,5 +126,47 @@ _gumbo_parser2(){
 
   GumboNode *p = NULL;
   GumboNode *root = gumbo_output->document;
-  
 }
+
+void
+_gumbo_node_type(GumboNode *node) {
+  switch(node->type) {
+  case GUMBO_NODE_DOCUMENT: printf("GUMBO_NODE_DOCUMENT\n"); break;
+  case GUMBO_NODE_ELEMENT: printf("GUMBO_NODE_ELEMENT\n"); break;
+  case GUMBO_NODE_TEXT: printf("GUMBO_NODE_TEXT\n"); break;
+  case GUMBO_NODE_CDATA: printf("GUMBO_NODE_CDATA\n"); break;
+  case GUMBO_NODE_COMMENT: printf("GUMBO_NODE_COMMENT\n"); break;
+  case GUMBO_NODE_WHITESPACE: printf("GUMBO_NODE_WHITESPACE\n"); break;
+  case GUMBO_NODE_TEMPLATE: printf("GUMBO_NODE_TEMPLATE\n"); break;
+  }
+}
+
+void
+_document_has_doctype(GumboDocument *document) {
+  printf("%d\n", document->has_doctype);
+}
+
+void
+_document_name(GumboDocument *document) {
+  printf("%s\n", document->name);
+}
+
+void
+_document_public_identifier(GumboDocument *document) {
+  printf("%s\n", document->public_identifier);
+}
+
+void
+_document_system_identifier(GumboDocument *document) {
+  printf("%s\n", document->system_identifier);
+}
+
+void
+_vector_length(GumboVector *vector) {
+  printf("%d\n", vector->length);
+}
+
+void
+_vector_get_data(GumboVector *vector, unsigned int index) {
+}
+

@@ -13,6 +13,7 @@
 -record(state, { shared_lib_path = "c_src"
                , shared_lib = "gumbo_driver"
                , port = undefined
+               , from = undefined
                }).
 
 %%--------------------------------------------------------------------
@@ -71,44 +72,47 @@ stop() ->
 %%
 %%--------------------------------------------------------------------
 gumbo_html_validation(String) ->
-    gen_server:call(?MODULE, {html_validation, String}).
+    gen_server:call(?MODULE, {valid, String}).
 
 %%--------------------------------------------------------------------
 %%
 %%--------------------------------------------------------------------
 gumbo_html_validation_errors(String) ->
-    gen_server:call(?MODULE, {html_validation_errors, String}).
+    gen_server:call(?MODULE, {errors, String}).
 
 %%--------------------------------------------------------------------
 %%
 %%--------------------------------------------------------------------
 handle_call({html_validation, String}, From, #state{ port = Port } = State) ->
     Port ! {self(), {command, encode({html_validation, String})}},
-    {noreply, State, {continue, {html_validation, From}}}.
+    {noreply, State#state{ from = From }}.
 
 %%--------------------------------------------------------------------
 %%
 %%--------------------------------------------------------------------
-handle_continue({html_validation, From}, #state{ port = Port } = State) ->
-    receive
-        {Port, {data, Data}} ->
-            Validation = case decode(Data) of
-                             X when X =:= 0 -> true;
-                             _ -> false
-                         end,
-            gen_server:reply(From, Validation)
-    end,
+handle_cast(close, #state{ port = Port } = State) ->
+    Port ! {self(), close},
     {noreply, State}.
 
 %%--------------------------------------------------------------------
 %%
 %%--------------------------------------------------------------------
-terminate(_Reason, #state{ port = Port }) ->
-    Port ! {self(), close},
-    receive
-        {Port, closed} ->
-            ok
-    end.
+handle_info({Port, {data, Data}}, #state{ port = Port, from = From } = State) 
+  when From =/= undefined ->
+    Validation = case decode(Data) of
+                     X when X =:= 0 -> true;
+                     _ -> false
+                 end,
+    gen_server:reply(From, Validation),
+    {noreply, State#state{ from = undefined }};
+handle_info({Port, closed}, #state{ port = Port } = State) ->
+    {stop, closed, State}.
+
+%%--------------------------------------------------------------------
+%%
+%%--------------------------------------------------------------------
+terminate(_Reason, _State) ->
+    ok.
 
 %%-----------------------------------------------------------------------------
 %% @doc

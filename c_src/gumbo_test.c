@@ -37,6 +37,10 @@ MU_TEST_SUITE(test_suite) {
 int
 main(int argc, char *argv[]) {
   MU_RUN_SUITE(test_suite);
+
+  // TODO: remove
+  _gumbo_parse("", "");
+  
   MU_REPORT();
   return MU_EXIT_CODE;
 }

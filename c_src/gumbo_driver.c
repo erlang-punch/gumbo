@@ -25,6 +25,7 @@ gumbo_driver_stop(ErlDrvData handle) {
 static void
 gumbo_driver_output(ErlDrvData handle, char *buff, ErlDrvSizeT bufflen) {
   data* d = (data*)handle;
+
   char message_size = sizeof(int);
   char message[message_size];
   (void)bzero(message, message_size);

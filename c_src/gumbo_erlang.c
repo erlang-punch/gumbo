@@ -75,7 +75,20 @@ _print_count(GumboNode *node, const char *name) {
 }
 
 void
-_gumbo_parse(const char *_input, const char *_output) {
+_gumbo_parse(const char* _input, const char *_output) {
+  const char *input = "<!doctype html><html><body>this is my content</body></html>";  
+  GumboOutput *gumbo_output = gumbo_parse(input);
+
+  int i=0;
+  for(i=0; gumbo_output->parent!=NULL ;i++) {
+    
+    print("%d\n", i)
+  }
+  
+}
+
+void
+_gumbo_parse_old(const char *_input, const char *_output) {
   const char *input = "<!doctype html><html><body>this is my content</body></html>";  
   GumboOutput *gumbo_output = gumbo_parse(input);
 
@@ -170,3 +183,17 @@ void
 _vector_get_data(GumboVector *vector, unsigned int index) {
 }
 
+void
+print_text(GumboText *element) {
+  printf("text: %s\n", element->text);
+}
+
+void
+print_element(GumboElement *element) {
+  printf("element: %d(%s)\n", element->tag, element->origin_tag);
+}
+
+void
+print_vector(GumboVector *vector) {
+  printf("vector: %d, %d\n", vector->length, vector->capacity);
+}
